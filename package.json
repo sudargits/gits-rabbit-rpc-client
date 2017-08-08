@@ -1,7 +1,7 @@
 {
   "name": "gits-rabbit-rpc",
-  "url" : "https://github.com/kumangxxx/gits-rabbit-rpc-client",
-  "version": "1.0.1",
+  "url": "https://github.com/kumangxxx/gits-rabbit-rpc-client",
+  "version": "1.0.2",
   "description": "Helper for using RabbitMQ as RPC Client",
   "main": "index.js",
   "scripts": {
