@@ -32,15 +32,18 @@ exports.callExchange = function(exchange_name, route, string_body, timeout, call
     if (!global_channel) { console.log('RabbitRPC channel is not ready'); return; }
     global_channel.assertQueue('', { exclusive: true }, function(err, q) {
 
+        console.log(`Queue name : ${q.queue}`);
+
         let corr_id = uuid();
         var done = false;
         var timeoutHandle;
 
         global_channel.consume(q.queue, function(msg) {
-            if (msg.properties.correlationId == corr_id && !done) {
+            if (msg != null && msg.properties.correlationId == corr_id && !done) {
                 callback(null, msg.content.toString());
                 done = true;
                 if (timeoutHandle) clearTimeout(timeoutHandle);
+                global_channel.deleteQueue(q.queue);
             }
         }, { noAck: true });
 
@@ -49,6 +52,7 @@ exports.callExchange = function(exchange_name, route, string_body, timeout, call
             if (!done) {
                 callback({ code: 502, message: 'Request time out'});
                 done = true;
+                global_channel.deleteQueue(q.queue);
             }
         }, timeout || 5000);
     });
